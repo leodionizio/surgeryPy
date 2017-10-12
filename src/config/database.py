@@ -1,25 +1,32 @@
-from os import getenv as getenv
-import json
-import pymssql
-import pymongo
+# from os import getenv as getenv
+# import json
+import pymssql 
 from flask import make_response
 
 
-class connectMssql:
-    def conn(self, commit):
+class Mssql:
+    """ Classe MSSQL """    
+    def __init__(self, host, user, password, database, commit):
+        """ Conexão do Banco MSSQL """    
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database = database
+        self.commit = commit       
+        
+
+    def conexao(self):    
+        """ Conexão do Banco MSSQL """    
         try:
-            pymssql.set_max_connections(5)
-            _conn_ = pymssql.connect(host='', user='', password='', database='CENTRO_CIRURGICO', as_dict=True)
-            self._cursor_ = _conn_.cursor()
+            _conn_ = pymssql.connect(self.host, self.user, self.password, self.database, True)
+            _cursor_ = _conn_.cursor()
             print('Sucesso na conexão a instância de MSSQL!!')
 
-            if commit:
-                self._conn = _conn_
-                return self._conn
+            if self.commit:
+                return _conn_
             else:
-                return self._cursor_
+                return _cursor_
 
         except BaseException as (err):
-
             print('Erro:' + err)
             return make_response('Erro na conexão', 404)
