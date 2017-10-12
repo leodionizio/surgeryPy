@@ -1,23 +1,29 @@
 # -*- coding: utf-8 -*-#
-from flask import make_response, Flask, jsonify
+import json
+from route import __user__ as user
+from flask import Flask
 import flask_cors
 
-app = Flask(__name__)
-flask_cors.CORS(app)
+__app__ = Flask(__name__)
+__app__.register_blueprint(user)
+flask_cors.CORS(__app__)
 
 
-@app.route('/', methods=['GET'])
+@__app__.route('/', methods=['GET'])
 def index():
     """ Rota root da API """
-    dicc = {
+    data = {
         "name": "Douglas",
         "nickname": "DougTQ",
         "nationality": "Brazilian",
         "age": 21
     }
-    reply = make_response(jsonify(dicc), 202)
+
+    reply = __app__.response_class(
+        response=json.dumps(data), status=202, mimetype='__app__lication/json')
+    # reply = make_response(jsonify(dicc), 202)
     return reply
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=False, host='localhost', use_reloader=True)
+    __app__.run(port=5000, debug=False, host='localhost', use_reloader=True)
